@@ -1,0 +1,24 @@
+# Build output
+build/
+
+# ESP-IDF
+sdkconfig.old
+
+# VS Code
+.vscode/
+
+# IntelliSense
+.clangd
+
+# Dev Container
+.devcontainer/
+
+# Python
+__pycache__/
+*.pyc
+
+# Windows
+Thumbs.db
+
+# macOS
+.DS_Store
