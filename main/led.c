@@ -3,36 +3,25 @@
 
 #include "driver/gpio.h"
 
-void led_init(void)
-{
-    gpio_set_direction(RED_LED, GPIO_MODE_OUTPUT);
-    gpio_set_direction(YELLOW_LED, GPIO_MODE_OUTPUT);
-    gpio_set_direction(GREEN_LED, GPIO_MODE_OUTPUT);
-
-    all_off();
-}
-
-void all_off(void)
+static void set_all_off(void)
 {
     gpio_set_level(RED_LED, 0);
     gpio_set_level(YELLOW_LED, 0);
     gpio_set_level(GREEN_LED, 0);
 }
 
-void red_on(void)
+void led_init(void)
 {
-    all_off();
-    gpio_set_level(RED_LED, 1);
+    gpio_set_direction(RED_LED, GPIO_MODE_OUTPUT);
+    gpio_set_direction(YELLOW_LED, GPIO_MODE_OUTPUT);
+    gpio_set_direction(GREEN_LED, GPIO_MODE_OUTPUT);
+
+    set_all_off();
 }
 
-void yellow_on(void)
+void led_set(led_mask_t mask)
 {
-    all_off();
-    gpio_set_level(YELLOW_LED, 1);
-}
-
-void green_on(void)
-{
-    all_off();
-    gpio_set_level(GREEN_LED, 1);
+    gpio_set_level(RED_LED,    (mask & LED_RED)    != 0);
+    gpio_set_level(YELLOW_LED, (mask & LED_YELLOW) != 0);
+    gpio_set_level(GREEN_LED,  (mask & LED_GREEN)  != 0);
 }

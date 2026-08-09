@@ -4,7 +4,7 @@
 #include "driver/gpio.h"
 
 #define RED_LED GPIO_NUM_2
-#define YELLOW_LED GPIO_NUM_4
-#define GREEN_LED GPIO_NUM_5
+#define YELLOW_LED GPIO_NUM_18
+#define GREEN_LED GPIO_NUM_19
 
 #endif
