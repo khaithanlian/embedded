@@ -3,6 +3,7 @@ idf_component_register(
         "hello_world_main.c"
         "led.c"
         "traffic_light.c"
+        "counter_task.c"
     PRIV_REQUIRES
         spi_flash
         esp_driver_gpio
