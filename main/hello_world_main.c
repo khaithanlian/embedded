@@ -1,5 +1,22 @@
 #include "counter_task.h"
 
+static void controller_task(void *pvParameters)
+{
+    TaskHandle_t task_handle = (TaskHandle_t)pvParameters;
+
+    vTaskDelay(pdMS_TO_TICKS(5000));
+
+    printf("Suspending Task 1\n");
+    vTaskSuspend(task_handle);
+
+    vTaskDelay(pdMS_TO_TICKS(5000));
+
+    printf("Resuming Task 1\n");
+    vTaskResume(task_handle);
+
+    vTaskDelete(NULL);
+}
+
 void app_main(void)
 {
     static const counter_task_config_t task_1_config =
@@ -25,6 +42,15 @@ void app_main(void)
     counter_task_create(
         &task_2_config,
         &task_2_handle
+    );
+
+    xTaskCreate(
+        controller_task,
+        "ControllerTask",
+        2048,
+        (void *)task_1_handle,
+        6,
+        NULL
     );
 }
 

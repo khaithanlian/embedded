@@ -21,12 +21,8 @@ static void counter_task(void *pvParameters)
     }
 }
 
-void counter_task_create(
-    const counter_task_config_t *config,
-    TaskHandle_t *task_handle
-)
-{
-    xTaskCreate(
+void counter_task_create(const counter_task_config_t *config, TaskHandle_t *task_handle){
+        xTaskCreate(
         counter_task,
         "CounterTask",
         2048,
