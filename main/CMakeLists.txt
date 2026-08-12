@@ -4,6 +4,9 @@ idf_component_register(
         "led.c"
         "traffic_light.c"
         "counter_task.c"
+        "timing_demo.c"
+        "shared_counter.c"
+        "led_controller.c"
     PRIV_REQUIRES
         spi_flash
         esp_driver_gpio

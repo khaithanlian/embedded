@@ -11,5 +11,10 @@ typedef enum
 
 void led_init(void);
 void led_set(led_mask_t mask);
+void led_red_on(void);
+void led_red_off(void);
+
+void led_yellow_on(void);
+void led_yellow_off(void);
 
 #endif
