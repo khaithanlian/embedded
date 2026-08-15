@@ -7,6 +7,7 @@ idf_component_register(
         "timing_demo.c"
         "shared_counter.c"
         "led_controller.c"
+        "task_notification_demo.c"
     PRIV_REQUIRES
         spi_flash
         esp_driver_gpio

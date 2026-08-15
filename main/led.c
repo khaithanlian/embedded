@@ -26,7 +26,7 @@ void led_set(led_mask_t mask)
     gpio_set_level(GREEN_LED,  (mask & LED_GREEN)  != 0);
 }
 
-//new setup for freeRTOS testing
+//new setup for freeRTOS testing, below are not even required.
 void led_red_on(void)
 {
     gpio_set_level(RED_LED, 1);
