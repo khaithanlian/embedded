@@ -6,5 +6,7 @@
 #define RED_LED GPIO_NUM_2
 #define YELLOW_LED GPIO_NUM_18
 #define GREEN_LED GPIO_NUM_19
+#define BLUE_LED GPIO_NUM_21
+#define BUTTON_GPIO GPIO_NUM_12
 
 #endif

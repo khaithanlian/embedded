@@ -3,61 +3,109 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 
+#include "driver/gpio.h"
+
+#include "led.h"
 #include "task_notification_demo.h"
+#include "board.h"
+
 
 static TaskHandle_t controller_task_handle = NULL;
 
 
+/* -----------------------------------------------------------
+ * Controller Task
+ * ----------------------------------------------------------- */
+
 static void controller_task(void *pvParameters)
 {
-    uint32_t notification_count;
     while (1)
     {
-        printf("Controller: waiting for notification...\n");
+        printf("Controller: waiting for button event...\n");
 
-        // ulTaskNotifyTake(
-        //     pdTRUE,
-        //     portMAX_DELAY
-        // );
-
-        notification_count = ulTaskNotifyTake(
-            pdTRUE,
+        ulTaskNotifyTake(
+            pdFALSE,
             portMAX_DELAY
         );
 
-        printf("Controller: received %lu notifications\n",
-            (unsigned long)notification_count);
+        printf("Controller: button event received!\n");
 
-        // printf("Controller: notification received!\n");
+        led_set(LED_RED);
+
+        vTaskDelay(
+            pdMS_TO_TICKS(1000)
+        );
+        for (int i=0; i<3; i++){
+        
+            led_set(LED_OFF);
+            vTaskDelay(pdMS_TO_TICKS(200));
+            led_set(LED_GREEN);
+            vTaskDelay(pdMS_TO_TICKS(200));
+            led_set(LED_OFF);
+        }
+        
     }
 }
 
 
-static void notifier_task(void *pvParameters)
+/* -----------------------------------------------------------
+ * Button Task
+ * ----------------------------------------------------------- */
+
+static void button_task(void *pvParameters)
 {
+    int last_state = 1;
+
     while (1)
     {
-        // vTaskDelay(pdMS_TO_TICKS(2000));
+        int current_state = gpio_get_level(BUTTON_GPIO);
 
-        // printf("Notifier: sending notification\n");
+        /*
+         * Detect transition:
+         *
+         * 1 = not pressed
+         * 0 = pressed
+         *
+         * Therefore:
+         * 1 -> 0 means button was pressed.
+         */
 
-        // xTaskNotifyGive(controller_task_handle);
-         vTaskDelay(pdMS_TO_TICKS(3000));
+        if (last_state == 1 && current_state == 0)
+        {
+            printf("Button Task: button pressed\n");
 
-        printf("Notifier: sending notification 1\n");
-        xTaskNotifyGive(controller_task_handle);
+            xTaskNotifyGive(
+                controller_task_handle
+            );
+        }
 
-        printf("Notifier: sending notification 2\n");
-        xTaskNotifyGive(controller_task_handle);
+        last_state = current_state;
 
-        printf("Notifier: sending notification 3\n");
-        xTaskNotifyGive(controller_task_handle);
+        vTaskDelay(
+            pdMS_TO_TICKS(10)
+        );
     }
 }
 
+
+/* -----------------------------------------------------------
+ * Start notification demo
+ * ----------------------------------------------------------- */
 
 void task_notification_demo_start(void)
 {
+    gpio_config_t button_config =
+    {
+        .pin_bit_mask = (1ULL << BUTTON_GPIO),
+        .mode = GPIO_MODE_INPUT,
+        .pull_up_en = GPIO_PULLUP_ENABLE,
+        .pull_down_en = GPIO_PULLDOWN_DISABLE,
+        .intr_type = GPIO_INTR_DISABLE
+    };
+
+    gpio_config(&button_config);
+
+
     xTaskCreate(
         controller_task,
         "NotificationController",
@@ -67,9 +115,10 @@ void task_notification_demo_start(void)
         &controller_task_handle
     );
 
+
     xTaskCreate(
-        notifier_task,
-        "NotifierTask",
+        button_task,
+        "ButtonTask",
         2048,
         NULL,
         5,
