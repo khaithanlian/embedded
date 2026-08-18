@@ -122,7 +122,7 @@ static void button_task(void *pvParameters)
 
                 if (
                     click_count == 3 &&
-                    elapsed_ms <= TRIPLE_CLICK_WINDOW_MS
+                        elapsed_ms <= TRIPLE_CLICK_WINDOW_MS
                 )
                 {
                     printf(
