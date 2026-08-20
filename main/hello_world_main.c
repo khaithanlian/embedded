@@ -35,7 +35,7 @@
 
 static TimerHandle_t led_timer;
 
-static bool led_state = false;
+static bool led_state = true;
 
 
 static void led_timer_callback(TimerHandle_t timer)
@@ -54,11 +54,13 @@ static void led_timer_callback(TimerHandle_t timer)
 
         printf("Timer callback: RED OFF\n");
     }
+    xTimerStop(led_timer, 0);
 }
 
 
 void app_main(void)
 {
+    
     printf("Starting software timer...\n");
 
     #if 0 
@@ -72,10 +74,13 @@ void app_main(void)
         );
     #endif
 
+    led_init();
+    led_set(LED_RED);
+
     led_timer = xTimerCreate(
         "LEDTimer",
         pdMS_TO_TICKS(1000),
-        pdTRUE,
+        pdFALSE,
         NULL,
         led_timer_callback
     );
